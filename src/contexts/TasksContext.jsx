@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import faviconLigth from "../assets/favicon/favicon-light.ico"
+import faviconDark from "../assets/favicon/favicon-dark.ico"
 
 export const TasksContext = createContext();
 
@@ -21,9 +23,7 @@ export const TaskProvider = ({ children }) => {
   useEffect(() => {
     const favicon = document.getElementById("favicon");
     if (favicon) {
-      favicon.href = theme === "dark"
-        ? "./src/assets/favicon/favicon-dark.ico"
-        : "./src/assets/favicon/favicon-light.ico";
+      favicon.href = theme === "dark" ? faviconDark : faviconLigth;
     }
   }, [theme]);
 
