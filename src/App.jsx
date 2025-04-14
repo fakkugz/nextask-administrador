@@ -118,8 +118,8 @@ function App() {
               <List/>
             </>
             } />
-          <Route path='task/:id' element={<TaskDetails/>} />
-          <Route path='categories' element={<Categories/>} />
+          <Route path='/task/:id' element={<TaskDetails/>} />
+          <Route path='/categories' element={<Categories/>} />
         </Routes>
       </Router>
   )
