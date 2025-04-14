@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { TasksContext } from "../contexts/TasksContext";
 
 const backgroundImages = {
-  dark: "/src/assets/images/artistic-blurry-colorful-wallpaper-background1.png",
-  light: "/src/assets/images/artistic-blurry-colorful-wallpaper-background2.webp",
+  dark: "../assets/images/artistic-blurry-colorful-wallpaper-background1.png",
+  light: "../assets/images/artistic-blurry-colorful-wallpaper-background2.webp",
 };
 
 const Background = () => {

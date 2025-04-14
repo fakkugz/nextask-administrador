@@ -22,8 +22,8 @@ export const TaskProvider = ({ children }) => {
     const favicon = document.getElementById("favicon");
     if (favicon) {
       favicon.href = theme === "dark"
-        ? "/favicon-dark.ico"
-        : "/favicon-light.ico";
+        ? "./src/assets/favicon/favicon-dark.ico"
+        : "./src/assets/favicon/favicon-light.ico";
     }
   }, [theme]);
 
