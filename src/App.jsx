@@ -4,7 +4,7 @@ import Buttons from "./components/Buttons";
 import NavBar from './components/NavBar';
 import TaskDetails from './pages/TaskDetails';
 import { useEffect, useContext } from 'react';
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { TasksContext } from './contexts/TasksContext';
 import Categories from './pages/Categories';
@@ -106,7 +106,7 @@ function App() {
   
 
   return (
-      <Router>
+      <Router basename="/nextask-administrador">
         <Background />
         <NavBar />
         <Routes>
