@@ -106,7 +106,7 @@ function App() {
   
 
   return (
-      <Router>
+      <Router basename="/nextask-administrador">
         <Background />
         <NavBar />
         <Routes>
