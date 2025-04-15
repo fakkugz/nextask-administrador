@@ -10,6 +10,8 @@ import NTLogo2 from '../assets/NexTaskLogo2.png';
 import { defaultTasks } from '../data/defaultTasks'
 import { defaultCategories } from '../data/defaultCategories';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 const NavBar = () => {
   const [pendientes, setPendientes] = useState(0);
@@ -76,7 +78,7 @@ const NavBar = () => {
   return (
     <Navbar expand="lg" className="bg-body-tertiary navbar" data-bs-theme={theme}>
       <Container fluid>
-        <Navbar.Brand href="/" className="d-flex align-items-center gap-3">
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-3">
           <img
             src={logoSrc}
             alt="NexTask Logo"
@@ -131,7 +133,7 @@ const NavBar = () => {
               <NavDropdown.Item onClick={() => setActiveFilters(null)}>
                 Mostrar Todas
               </NavDropdown.Item>
-              <NavDropdown.Item href="categories">Administrar</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/categories">Administrar</NavDropdown.Item>
             </NavDropdown>
             <Navbar.Text>
               Pendientes: <strong>{pendientes}</strong>
