@@ -10,7 +10,7 @@ import NTLogo2 from '../assets/NexTaskLogo2.png';
 import { defaultTasks } from '../data/defaultTasks'
 import { defaultCategories } from '../data/defaultCategories';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 
 const NavBar = () => {
@@ -20,6 +20,8 @@ const NavBar = () => {
   const [logoSrc, setLogoSrc] = useState(theme === 'dark' ? NTLogo2 : NTLogo1);
   const [isResetting, setIsResetting] = useState(false);
 
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLogoSrc(theme === 'dark' ? NTLogo2 : NTLogo1);
@@ -124,13 +126,23 @@ const NavBar = () => {
               {categories && categories.map(category => (
                 <NavDropdown.Item
                   key={category.id}
-                  onClick={() => setActiveFilters(category.category)}
+                  onClick={() => {
+                    setActiveFilters(category.category);
+                    if (location.pathname === '/categories') {
+                      navigate('/');
+                    }
+                  }}
                 >
                   {category.category}
                 </NavDropdown.Item>
               ))}
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => setActiveFilters(null)}>
+              <NavDropdown.Item onClick={() => {
+                setActiveFilters(null);
+                if (location.pathname === '/categories') {
+                  navigate('/');
+                }
+              }}>
                 Mostrar Todas
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/categories">Administrar</NavDropdown.Item>

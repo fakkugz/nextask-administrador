@@ -7,11 +7,14 @@ import { v4 as uuidv4 } from "uuid";
 import axios from 'axios';
 
 const AddCategory = () => {
+    
     const [newCategory, setNewCategory] = useState({ id: "", category: "" });
     const [error, setError] = useState("");
-    const { apiUrl, theme, categories, setCategories,
+    const {
+        apiUrl, theme, setList, categories, setCategories,
         showAddCategory, setShowAddCategory,
-        toEditCategory, setToEditCategory } = useContext(TasksContext);
+        toEditCategory, setToEditCategory
+    } = useContext(TasksContext);
 
     useEffect(() => {
         if (toEditCategory) {
@@ -31,41 +34,68 @@ const AddCategory = () => {
     const handleChange = (e) => {
         const { value } = e.target;
         const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    
+
         setNewCategory(prevCategory => ({
             ...prevCategory,
             id: prevCategory.id || uuidv4(),
             category: formattedValue
         }));
-    
+
         setError("");
     };
-    
 
     const handleAddCategory = async () => {
         const trimmedCategory = newCategory.category.trim();
-
+    
         if (!trimmedCategory) {
             setError("El nombre de la categoría no puede estar vacío.");
             return;
         }
-
-        if (categories.some(cat => cat.category === newCategory.category)) {
+    
+        const categoryAlreadyExists = categories.some(cat =>
+            cat.category.toLowerCase() === newCategory.category.toLowerCase() &&
+            cat.id !== newCategory.id
+        );
+    
+        if (categoryAlreadyExists) {
             setError("Esta categoría ya existe.");
             return;
         }
-
+    
         if (toEditCategory) {
             try {
+                // Actualizar categoría en la lista de categorías
                 const response = await axios.put(`${apiUrl}/categories/${newCategory.id}`, newCategory);
                 const updatedCategories = categories.map(category =>
                     category.id === newCategory.id ? response.data : category
                 );
                 setCategories(updatedCategories);
+    
+                // Obtener tareas actuales
+                const resTasks = await axios.get(`${apiUrl}/tasks`);
+                const tasks = resTasks.data;
+    
+                // Reemplazar la categoría antigua por la nueva (insensible a mayúsculas)
+                const updatedTasks = tasks.map(task =>
+                    task.category.toLowerCase() === toEditCategory.category.toLowerCase()
+                        ? { ...task, category: newCategory.category }
+                        : task
+                );
+    
+                // Guardar tareas modificadas
+                await Promise.all(
+                    updatedTasks.map(task =>
+                        axios.put(`${apiUrl}/tasks/${task.id}`, task)
+                    )
+                );
+    
+                // Actualizar estado local
+                setList(updatedTasks);
+    
                 handleClose();
             } catch (error) {
-                console.error("Error al editar la categoría:", error);
-            }            
+                console.error("Error al editar la categoría o actualizar tareas:", error);
+            }
         } else {
             try {
                 const response = await axios.post(`${apiUrl}/categories`, newCategory);

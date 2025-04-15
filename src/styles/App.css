@@ -163,9 +163,6 @@ button:focus-visible {
   .navbar-toggler {
     align-self: flex-start;
   }
-  .buttons {
-    margin-top: 24px;
-  }
 }
 
 .navbar-logo {
