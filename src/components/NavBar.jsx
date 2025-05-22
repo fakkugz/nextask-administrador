@@ -1,10 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import ThemeToggle from '../components/ThemeToggle';
-import { TasksContext } from '../contexts/TasksContext';
+import useTaskStore from "../store/useTaskStore";
 import NTLogo1 from '../assets/NexTaskLogo1.png';
 import NTLogo2 from '../assets/NexTaskLogo2.png';
 import { defaultTasks } from '../data/defaultTasks'
@@ -15,7 +15,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const [pendientes, setPendientes] = useState(0);
-  const { apiUrl, setList, list, theme, setTheme, categories, setCategories, setActiveFilters } = useContext(TasksContext);
+  const apiUrl = useTaskStore(state => state.apiUrl);
+  const theme = useTaskStore(state => state.theme);
+  const categories = useTaskStore(state => state.categories);
+  const setCategories = useTaskStore(state => state.setCategories);
+  const list = useTaskStore(state => state.list);
+  const setList = useTaskStore(state => state.setList);
+  const setActiveFilters = useTaskStore(state => state.setActiveFilters);
 
   const [logoSrc, setLogoSrc] = useState(theme === 'dark' ? NTLogo2 : NTLogo1);
   const [isResetting, setIsResetting] = useState(false);
@@ -150,7 +156,7 @@ const NavBar = () => {
             <Navbar.Text>
               Pendientes: <strong>{pendientes}</strong>
             </Navbar.Text>
-            <ThemeToggle theme={theme} setTheme={setTheme} />
+            <ThemeToggle />
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -1,14 +1,20 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import Task from "../components/Task";
-import { TasksContext } from "../contexts/TasksContext";
+import useTaskStore from "../store/useTaskStore";
 import Table from 'react-bootstrap/Table';
 import Spinner from 'react-bootstrap/Spinner';
 import SortIcon from "../components/SortIcon";
 
 const List = () => {
-    const { list, theme, handleToggleCheck, editTask, isLoading, activeFilters } = useContext(TasksContext);
+
+    const list = useTaskStore(state => state.list);
+    const theme = useTaskStore(state => state.theme);
+    const handleToggleCheck = useTaskStore(state => state.handleToggleCheck);
+    const editTask = useTaskStore(state => state.editTask);
+    const isLoading = useTaskStore(state => state.isLoading);
+    const activeFilters = useTaskStore(state => state.activeFilters);
 
     const [orderedBaseList, setOrderedBaseList] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });

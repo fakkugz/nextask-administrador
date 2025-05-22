@@ -1,20 +1,25 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { TasksContext } from '../contexts/TasksContext';
+import useTaskStore from "../store/useTaskStore";
 import { v4 as uuidv4 } from "uuid";
 import axios from 'axios';
 
 const AddCategory = () => {
-    
+
     const [newCategory, setNewCategory] = useState({ id: "", category: "" });
     const [error, setError] = useState("");
-    const {
-        apiUrl, theme, setList, categories, setCategories,
-        showAddCategory, setShowAddCategory,
-        toEditCategory, setToEditCategory
-    } = useContext(TasksContext);
+    const apiUrl = useTaskStore(state => state.apiUrl);
+    const theme = useTaskStore(state => state.theme);
+    const setList = useTaskStore(state => state.setList);
+    const categories = useTaskStore(state => state.categories);
+    const setCategories = useTaskStore(state => state.setCategories);
+    const showAddCategory = useTaskStore(state => state.showAddCategory);
+    const setShowAddCategory = useTaskStore(state => state.setShowAddCategory);
+    const toEditCategory = useTaskStore(state => state.toEditCategory);
+    const setToEditCategory = useTaskStore(state => state.setToEditCategory);
+
 
     useEffect(() => {
         if (toEditCategory) {
@@ -46,22 +51,22 @@ const AddCategory = () => {
 
     const handleAddCategory = async () => {
         const trimmedCategory = newCategory.category.trim();
-    
+
         if (!trimmedCategory) {
             setError("El nombre de la categoría no puede estar vacío.");
             return;
         }
-    
+
         const categoryAlreadyExists = categories.some(cat =>
             cat.category.toLowerCase() === newCategory.category.toLowerCase() &&
             cat.id !== newCategory.id
         );
-    
+
         if (categoryAlreadyExists) {
             setError("Esta categoría ya existe.");
             return;
         }
-    
+
         if (toEditCategory) {
             try {
                 // Actualizar categoría en la lista de categorías
@@ -70,28 +75,28 @@ const AddCategory = () => {
                     category.id === newCategory.id ? response.data : category
                 );
                 setCategories(updatedCategories);
-    
+
                 // Obtener tareas actuales
                 const resTasks = await axios.get(`${apiUrl}/tasks`);
                 const tasks = resTasks.data;
-    
+
                 // Reemplazar la categoría antigua por la nueva (insensible a mayúsculas)
                 const updatedTasks = tasks.map(task =>
                     task.category.toLowerCase() === toEditCategory.category.toLowerCase()
                         ? { ...task, category: newCategory.category }
                         : task
                 );
-    
+
                 // Guardar tareas modificadas
                 await Promise.all(
                     updatedTasks.map(task =>
                         axios.put(`${apiUrl}/tasks/${task.id}`, task)
                     )
                 );
-    
+
                 // Actualizar estado local
                 setList(updatedTasks);
-    
+
                 handleClose();
             } catch (error) {
                 console.error("Error al editar la categoría o actualizar tareas:", error);

@@ -3,80 +3,84 @@ import List from './pages/List';
 import Buttons from "./components/Buttons";
 import NavBar from './components/NavBar';
 import TaskDetails from './pages/TaskDetails';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
-import { TasksContext } from './contexts/TasksContext';
+import useTaskStore from './store/useTaskStore';
 import Categories from './pages/Categories';
 import Background from './components/Background';
+import FaviconUpdater from './components/FaviconUpdater';
 import { defaultTasks } from './data/defaultTasks';
-import { defaultCategories } from './data/defaultCategories'; 
+import { defaultCategories } from './data/defaultCategories';
 
 
 function App() {
 
-  const { apiUrl, list, setList,
-    setIsLoading, setCategories } = useContext(TasksContext);
+  const apiUrl = useTaskStore(state => state.apiUrl);
+  const list = useTaskStore(state => state.list);
+  const setList = useTaskStore(state => state.setList);
+  const setIsLoading = useTaskStore(state => state.setIsLoading);
+  const setCategories = useTaskStore(state => state.setCategories);
 
-    
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-    
-          const [tasksRes, categoriesRes] = await Promise.all([
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        const [tasksRes, categoriesRes] = await Promise.all([
+          axios.get(`${apiUrl}/tasks`),
+          axios.get(`${apiUrl}/categories`)
+        ]);
+
+        const tasksAreEqual =
+          tasksRes.data.length === defaultTasks.length &&
+          tasksRes.data.every(task =>
+            defaultTasks.some(def => def.id === task.id && def.name === task.name)
+          );
+
+        const categoriesAreEqual =
+          categoriesRes.data.length === defaultCategories.length &&
+          categoriesRes.data.every(cat =>
+            defaultCategories.some(def => def.id === cat.id && def.category === cat.category)
+          );
+
+        if (!tasksAreEqual || !categoriesAreEqual) {
+          // Borrar actuales
+          await Promise.all([
+            ...tasksRes.data.map(task => axios.delete(`${apiUrl}/tasks/${task.id}`)),
+            ...categoriesRes.data.map(cat => axios.delete(`${apiUrl}/categories/${cat.id}`))
+          ]);
+
+          // Agregar predeterminadas
+          await Promise.all([
+            ...defaultTasks.map(task => axios.post(`${apiUrl}/tasks`, task)),
+            ...defaultCategories.map(cat => axios.post(`${apiUrl}/categories`, cat))
+          ]);
+
+          // Recargar actualizados
+          const [newTasksRes, newCategoriesRes] = await Promise.all([
             axios.get(`${apiUrl}/tasks`),
             axios.get(`${apiUrl}/categories`)
           ]);
-    
-          const tasksAreEqual =
-            tasksRes.data.length === defaultTasks.length &&
-            tasksRes.data.every(task =>
-              defaultTasks.some(def => def.id === task.id && def.name === task.name)
-            );
-    
-          const categoriesAreEqual =
-            categoriesRes.data.length === defaultCategories.length &&
-            categoriesRes.data.every(cat =>
-              defaultCategories.some(def => def.id === cat.id && def.category === cat.category)
-            );
-    
-          if (!tasksAreEqual || !categoriesAreEqual) {
-            // Borrar actuales
-            await Promise.all([
-              ...tasksRes.data.map(task => axios.delete(`${apiUrl}/tasks/${task.id}`)),
-              ...categoriesRes.data.map(cat => axios.delete(`${apiUrl}/categories/${cat.id}`))
-            ]);
-    
-            // Agregar predeterminadas
-            await Promise.all([
-              ...defaultTasks.map(task => axios.post(`${apiUrl}/tasks`, task)),
-              ...defaultCategories.map(cat => axios.post(`${apiUrl}/categories`, cat))
-            ]);
-    
-            // Recargar actualizados
-            const [newTasksRes, newCategoriesRes] = await Promise.all([
-              axios.get(`${apiUrl}/tasks`),
-              axios.get(`${apiUrl}/categories`)
-            ]);
-    
-            setList(newTasksRes.data);
-            setCategories(newCategoriesRes.data);
-          } else {
-            setList(tasksRes.data);
-            setCategories(categoriesRes.data);
-          }
-        } catch (error) {
-          console.error('Error al validar o cargar tareas/categorías:', error);
-        } finally {
-          setIsLoading(false);
+
+          setList(newTasksRes.data);
+          setCategories(newCategoriesRes.data);
+        } else {
+          setList(tasksRes.data);
+          setCategories(categoriesRes.data);
         }
-      };
-    
-      fetchData();
-    }, []);
-    
-     
+      } catch (error) {
+        console.error('Error al validar o cargar tareas/categorías:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
 
   const handleAddTask = (newTask) => {
@@ -103,9 +107,11 @@ function App() {
         });
     }
   };
-  
+
 
   return (
+    <>
+      <FaviconUpdater />
       <Router>
         <Background />
         <NavBar />
@@ -115,14 +121,15 @@ function App() {
               <Buttons
                 onAddTask={handleAddTask}
               />
-              <List/>
+              <List />
             </>
-            } />
-          <Route path='/task/:id' element={<TaskDetails/>} />
-          <Route path='/categories' element={<Categories/>} />
+          } />
+          <Route path='/task/:id' element={<TaskDetails />} />
+          <Route path='/categories' element={<Categories />} />
         </Routes>
       </Router>
+    </>
   )
 }
 
-export default App
+export default App;

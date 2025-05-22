@@ -482,6 +482,9 @@ button:focus-visible {
     position: relative;
     bottom: 4px;
   }
+  #icon-trash {
+    bottom: 0px;
+  }
 }
 
 .task-list,
@@ -937,11 +940,11 @@ tr {
 }
 
 .light-mode .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
-  border-color: var(--sand-900); /* o el color que quieras para el hover */
+  border-color: var(--sand-900);
 }
 
 .light-mode .react-datepicker__current-month {
-  color: var(--sand-950); /* o el color que quieras */
+  color: var(--sand-950);
 }
 
 .light-mode ::selection,
@@ -992,6 +995,7 @@ tr {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
+  min-width: 235px;
   gap: 3rem;
   color: var(--blue-100);
   font-size: larger;
@@ -1016,7 +1020,10 @@ tr {
 
 .category-actions {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
+  min-width: 72px;
 }
 
 .category-trash,

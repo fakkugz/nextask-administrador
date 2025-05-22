@@ -1,10 +1,9 @@
-import { useContext } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { TasksContext } from '../contexts/TasksContext';
+import useTaskStore from "../store/useTaskStore";
 
 const PopOver = ( {popOver, setPopOver, message} ) => {
 
-const { theme } = useContext(TasksContext);
+const theme = useTaskStore((state) => state.theme);
 
     return (
         <>

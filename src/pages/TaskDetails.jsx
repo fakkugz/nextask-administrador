@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { TasksContext } from "../contexts/TasksContext";
+import useTaskStore from "../store/useTaskStore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
@@ -8,7 +7,10 @@ const TaskDetails = () => {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const { list, formatDate, handleToggleCheck, editTask } = useContext(TasksContext);
+  const list = useTaskStore(state => state.list);
+  const formatDate = useTaskStore(state => state.formatDate);
+  const handleToggleCheck = useTaskStore(state => state.handleToggleCheck);
+  const editTask = useTaskStore(state => state.editTask);
 
   const taskIndex = list.findIndex(task => task.id === id);
   const task = list[taskIndex];

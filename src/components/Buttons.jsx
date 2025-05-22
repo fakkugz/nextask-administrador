@@ -1,17 +1,23 @@
 import plus from "../assets/icons/plus.svg"
 import close from "../assets/icons/clean.svg"
 import TaskModal from "./TaskModal";
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PopOver from "./Popover";
 import axios from "axios";
-import { TasksContext } from "../contexts/TasksContext";
+import useTaskStore from "../store/useTaskStore";
 
-const Buttons = ({onAddTask}) => {
+const Buttons = ({ onAddTask }) => {
 
-    const {apiUrl, list, setList,
-        showModal, setShowModal, setToEditTask,} = useContext(TasksContext);
+    const apiUrl = useTaskStore(state => state.apiUrl);
+    const list = useTaskStore(state => state.list);
+    const setList = useTaskStore(state => state.setList);
+    const showModal = useTaskStore(state => state.showModal);
+    const setShowModal = useTaskStore(state => state.setShowModal);
+    const setToEditTask = useTaskStore(state => state.setToEditTask);
+
+
     const handleCloseModal = () => setShowModal(false);
-    const handleShowModal = () => {setToEditTask(false); setShowModal(true);};
+    const handleShowModal = () => { setToEditTask(false); setShowModal(true); };
 
     const [popOver, setPopOver] = useState(false);
 
@@ -19,7 +25,7 @@ const Buttons = ({onAddTask}) => {
 
     useEffect(() => {
         const handleResize = () => {
-        setIsMobile(window.innerWidth < 500);
+            setIsMobile(window.innerWidth < 500);
         };
 
         window.addEventListener("resize", handleResize);
@@ -29,16 +35,16 @@ const Buttons = ({onAddTask}) => {
 
     const deleteCompleted = () => {
         const completedTasks = list.filter(task => task.completed);
-    
+
         if (completedTasks.length === 0) {
             setPopOver(true);
             return;
         }
-    
+
         const deletePromises = completedTasks.map(task =>
             axios.delete(`${apiUrl}/tasks/${task.id}`)
         );
-    
+
         Promise.all(deletePromises)
             .then(() => {
                 const updatedList = list.filter(task => !task.completed);
@@ -58,8 +64,8 @@ const Buttons = ({onAddTask}) => {
             <button className="button" id="clean-button" onClick={deleteCompleted} aria-label="Eliminar tareas completadas">
                 <img src={close} alt="icono cerrar" /> {isMobile ? "LIMPIAR" : "LIMPIAR COMPLETADAS"}
             </button>
-            {popOver && <PopOver popOver={popOver} setPopOver={setPopOver} message="No hay tareas completadas para eliminar."/>}
-            {showModal && <TaskModal show={showModal} onClose={handleCloseModal} onSave={onAddTask}/>}
+            {popOver && <PopOver popOver={popOver} setPopOver={setPopOver} message="No hay tareas completadas para eliminar." />}
+            {showModal && <TaskModal show={showModal} onClose={handleCloseModal} onSave={onAddTask} />}
         </section>
     );
 };

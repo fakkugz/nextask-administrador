@@ -1,10 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { v4 as uuidv4 } from "uuid";
 import AddCategory from "./AddCategory";
-import { TasksContext } from '../contexts/TasksContext';
+import useTaskStore from '../store/useTaskStore';
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,7 +12,11 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const TaskModal = ({ show, onClose, onSave }) => {
 
-    const { toEditTask, categories, setShowAddCategory, theme } = useContext(TasksContext);
+    const toEditTask = useTaskStore(state => state.toEditTask);
+    const categories = useTaskStore(state => state.categories);
+    const setShowAddCategory = useTaskStore(state => state.setShowAddCategory);
+    const theme = useTaskStore(state => state.theme);
+
 
     const inicialTask = () => (
         {
@@ -43,7 +47,7 @@ const TaskModal = ({ show, onClose, onSave }) => {
             setTask(inicialTask());
         }
     }, [toEditTask]);
-    
+
 
     const validate = () => {
         const newErrors = {};

@@ -18,14 +18,6 @@ export const TaskProvider = ({ children }) => {
   // Tema desde localStorage
   const storedTheme = localStorage.getItem("theme") || "dark";
   const [theme, setTheme] = useState(storedTheme);
-  
-
-  useEffect(() => {
-    const favicon = document.getElementById("favicon");
-    if (favicon) {
-      favicon.href = theme === "dark" ? faviconDark : faviconLigth;
-    }
-  }, [theme]);
 
   
   const apiUrl = "https://backend-list-production.up.railway.app";

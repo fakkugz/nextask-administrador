@@ -1,12 +1,14 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { TasksContext } from "../contexts/TasksContext";
+import useTaskStore from "../store/useTaskStore";
 import Form from 'react-bootstrap/Form';
 
 const Task = ({ id, index, name, category, inicio, fin, completed }) => {
-    const { deleteTask, editTask, handleToggleCheck } = useContext(TasksContext);
+
+    const deleteTask = useTaskStore(state => state.deleteTask);
+    const editTask = useTaskStore(state => state.editTask);
+    const handleToggleCheck = useTaskStore(state => state.handleToggleCheck);
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
@@ -65,7 +67,7 @@ const Task = ({ id, index, name, category, inicio, fin, completed }) => {
                     label={completed ? "Completado" : "Pendiente"}
                     checked={completed}
                     onChange={() => handleToggleCheck(id)}
-                    onClick={(e) => e.stopPropagation()}                   
+                    onClick={(e) => e.stopPropagation()}
                     className="estado-switch"
                 />
             </td>

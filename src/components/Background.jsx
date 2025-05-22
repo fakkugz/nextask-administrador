@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { TasksContext } from "../contexts/TasksContext";
+import { useEffect, useState } from "react";
+import useTaskStore from "../store/useTaskStore";
 import darkBg from "../assets/images/artistic-blurry-colorful-wallpaper-background1.png";
 import lightBg from "../assets/images/artistic-blurry-colorful-wallpaper-background2.webp";
 
@@ -9,7 +9,7 @@ const backgroundImages = {
 };
 
 const Background = () => {
-  const { theme } = useContext(TasksContext);
+  const theme = useTaskStore((state) => state.theme);
   const [currentBg, setCurrentBg] = useState(backgroundImages[theme]);
   const [fade, setFade] = useState(false);
 
