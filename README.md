@@ -26,9 +26,11 @@ Nextask es una aplicación web para la gestión de tareas desarrollada con React
 ---
 
 ## ⚠️ Importante
-
-Cualquier cambio realizado en la app (agregar, editar o eliminar tareas/categorías) **afecta directamente la base de datos compartida** utilizada por todos los usuarios.  
+Cualquier cambio realizado en la app (agregar, editar o eliminar tareas/categorías) afecta directamente la base de datos compartida utilizada por todos los usuarios.
 El botón "Restablecer tareas" permite volver rápidamente al ejemplo base.
+
+💤 Paciencia, joven padawan: el backend está desplegado en Render, un servicio que "duerme" la API tras 15 minutos de inactividad.
+¡Dale unos segundos en la primera carga para que despierte y entre en acción! 🚀☕
 
 ---
 
@@ -40,7 +42,7 @@ El botón "Restablecer tareas" permite volver rápidamente al ejemplo base.
 - **Axios** – Consumo de API REST  
 - **@dnd-kit** – Drag and drop moderno y accesible  
 - **Vite** – Bundler de alto rendimiento  
-- **Railway** – Hosting del backend simulado  
+- **Render** – Hosting del backend simulado 
 
 ---
 
