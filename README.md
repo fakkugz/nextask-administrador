@@ -35,7 +35,7 @@ El botón "Restablecer tareas" permite volver rápidamente al ejemplo base.
 ## 🧰 Tecnologías utilizadas
 
 - **React** – Librería principal de desarrollo  
-- **Context API** – Gestión global del estado  
+- **Zustand** – Gestión global del estado  
 - **React Router** – Navegación entre páginas  
 - **Axios** – Consumo de API REST  
 - **@dnd-kit** – Drag and drop moderno y accesible  
